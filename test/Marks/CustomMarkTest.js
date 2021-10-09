@@ -1,57 +1,57 @@
 const assert = require('assert');
 
-const Renderer = require("../../src/Renderer");
+const Renderer = require('../../src/Renderer');
 
-describe("Custom Mark Test", function () {
-    it ("Single Mark", function () {
-        const SuperscriptMark = require("./Custom/SuperScript");
+describe('Custom Mark Test', function () {
+  it('Single Mark', function () {
+    const SuperscriptMark = require('./Custom/SuperScript');
 
-        let json = {
-            type: "doc",
-            content: [
-                {
-                    type: "text",
-                    text: "Example Text",
-                    marks: [
-                        {
-                            type: "superscript"
-                        }
-                    ]
-                }
-            ]
-        };
+    let json = {
+      type: 'doc',
+      content: [
+        {
+          type: 'text',
+          text: 'Example Text',
+          marks: [
+            {
+              type: 'superscript',
+            },
+          ],
+        },
+      ],
+    };
 
-        let html = "<sup>Example Text</sup>";
+    let html = '<sup>Example Text</sup>';
 
-        const renderer = new Renderer();
-        renderer.addMark(SuperscriptMark);
+    const renderer = new Renderer();
+    renderer.addMark(SuperscriptMark);
 
-        assert.deepEqual(html, renderer.render(json));
-    });
+    assert.deepEqual(html, renderer.render(json));
+  });
 
-    it ("Array Mark", function () {
-        const SuperscriptMark = require("./Custom/SuperScript");
+  it('Array Mark', function () {
+    const SuperscriptMark = require('./Custom/SuperScript');
 
-        let json = {
-            type: "doc",
-            content: [
-                {
-                    type: "text",
-                    text: "Example Text",
-                    marks: [
-                        {
-                            type: "superscript"
-                        }
-                    ]
-                }
-            ]
-        };
+    let json = {
+      type: 'doc',
+      content: [
+        {
+          type: 'text',
+          text: 'Example Text',
+          marks: [
+            {
+              type: 'superscript',
+            },
+          ],
+        },
+      ],
+    };
 
-        let html = "<sup>Example Text</sup>";
+    let html = '<sup>Example Text</sup>';
 
-        const renderer = new Renderer();
-        renderer.addMarks([SuperscriptMark]);
+    const renderer = new Renderer();
+    renderer.addMarks([SuperscriptMark]);
 
-        assert.deepEqual(html, renderer.render(json));
-    });
+    assert.deepEqual(html, renderer.render(json));
+  });
 });

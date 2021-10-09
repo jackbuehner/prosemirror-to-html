@@ -1,13 +1,13 @@
-const Mark = require("./Mark");
+const Mark = require('./Mark');
 
 class Code extends Mark {
-    matching () {
-        return this.mark.type === "code";
-    }
+  matching() {
+    return this.mark.type === 'code';
+  }
 
-    tag () {
-        return "code";
-    }
+  tag() {
+    return 'code';
+  }
 }
 
 module.exports = Code;

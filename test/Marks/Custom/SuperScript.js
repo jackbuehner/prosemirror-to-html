@@ -1,13 +1,13 @@
-const Mark = require("../../../src/Marks/Mark");
+const Mark = require('../../../src/Marks/Mark');
 
 class Superscript extends Mark {
-    matching () {
-        return this.mark.type === "superscript";
-    }
+  matching() {
+    return this.mark.type === 'superscript';
+  }
 
-    tag () {
-        return "sup";
-    }
+  tag() {
+    return 'sup';
+  }
 }
 
 module.exports = Superscript;

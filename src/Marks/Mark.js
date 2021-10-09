@@ -1,15 +1,15 @@
 class Mark {
-    constructor (mark) {
-        this.mark = mark;
-    }
+  constructor(mark) {
+    this.mark = mark;
+  }
 
-    matching () {
-        return false;
-    }
+  matching() {
+    return false;
+  }
 
-    tag () {
-        return null;
-    }
+  tag() {
+    return null;
+  }
 }
 
 module.exports = Mark;
