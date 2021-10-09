@@ -1,17 +1,17 @@
-const Node = require("../../../src/Nodes/Node");
+const Node = require('../../../src/Nodes/Node');
 
 class HardBreak extends Node {
-    matching () {
-        return this.node.type === "hard_break";
-    }
+  matching() {
+    return this.node.type === 'hard_break';
+  }
 
-    selfClosing () {
-        return true;
-    }
+  selfClosing() {
+    return true;
+  }
 
-    tag () {
-        return "br";
-    }
+  toDOM() {
+    return ['br', this.node.attrs, 0];
+  }
 }
 
 module.exports = HardBreak;

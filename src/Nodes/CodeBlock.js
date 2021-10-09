@@ -1,20 +1,13 @@
-const Node = require("./Node");
+const Node = require('./Node');
 
 class CodeBlock extends Node {
-    matching () {
-        return this.node.type === "code_block";
-    }
+  matching() {
+    return this.node.type === 'code_block';
+  }
 
-    tag () {
-        return [
-            {
-                tag: "pre"
-            },
-            {
-                tag: "code"
-            }
-        ];
-    }
+  toDOM() {
+    return ['pre', ['code', this.node.attrs, 0]];
+  }
 }
 
 module.exports = CodeBlock;

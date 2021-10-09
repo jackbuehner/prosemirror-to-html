@@ -1,13 +1,13 @@
-const Node = require("./Node");
+const Node = require('./Node');
 
 class ItemList extends Node {
-    matching () {
-        return this.node.type === "list_item";
-    }
+  matching() {
+    return this.node.type === 'list_item';
+  }
 
-    tag () {
-        return "li";
-    }
+  toDOM() {
+    return ['li', this.node.attrs, 0];
+  }
 }
 
 module.exports = ItemList;

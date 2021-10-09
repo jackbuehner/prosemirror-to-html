@@ -1,13 +1,13 @@
-const Node = require("./Node");
+const Node = require('./Node');
 
 class Paragraph extends Node {
-    matching () {
-        return this.node.type === "paragraph";
-    }
+  matching() {
+    return this.node.type === 'paragraph';
+  }
 
-    tag () {
-        return "p";
-    }
+  toDOM() {
+    return ['p', this.node.attrs, 0];
+  }
 }
 
 module.exports = Paragraph;

@@ -1,13 +1,13 @@
-const Node = require("./Node");
+const Node = require('./Node');
 
 class BulletList extends Node {
-    matching () {
-        return this.node.type === "bullet_list";
-    }
+  matching() {
+    return this.node.type === 'bullet_list';
+  }
 
-    tag () {
-        return "ul";
-    }
+  toDOM() {
+    return ['ul', this.node.attrs, 0];
+  }
 }
 
 module.exports = BulletList;
