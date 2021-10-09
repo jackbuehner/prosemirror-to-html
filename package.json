@@ -1,6 +1,6 @@
 {
-  "name": "prosemirror-to-html-js",
-  "version": "1.0.2",
+  "name": "@cristata/prosemirror-to-html-js",
+  "version": "2.0.1",
   "description": "Takes ProseMirror JSON and outputs HTML",
   "main": "index.js",
   "scripts": {
@@ -10,8 +10,13 @@
     "prosemirror",
     "text-editor"
   ],
-  "author": "Ashwani Agarwal",
+  "author": "Jack Buehner",
+  "contributors": [
+    "Ashwani Agarwal"
+  ],
   "license": "ISC",
+  "homepage": "https://github.com/jackbuehner/prosemirror-to-html",
+  "repository": "https://github.com/jackbuehner/prosemirror-to-html",
   "dependencies": {},
   "devDependencies": {
     "chai": "^4.2.0",
