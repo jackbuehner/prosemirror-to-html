@@ -2,7 +2,7 @@ const Node = require('./Node');
 
 class OrderedList extends Node {
   matching() {
-    return this.node.type === 'ordered_list';
+    return this.node.type === 'orderedList';
   }
 
   toDOM() {
