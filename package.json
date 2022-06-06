@@ -1,6 +1,6 @@
 {
   "name": "@cristata/prosemirror-to-html-js",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "Takes ProseMirror JSON and outputs HTML",
   "main": "index.js",
   "scripts": {
