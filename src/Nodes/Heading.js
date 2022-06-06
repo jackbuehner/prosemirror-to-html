@@ -1,4 +1,5 @@
 const Node = require('./Node');
+const { slugify } = require('../utils');
 
 class Heading extends Node {
   matching() {
@@ -6,7 +7,8 @@ class Heading extends Node {
   }
 
   toDOM() {
-    return [`h${this.node.attrs.level}`, this.node.attrs, 0];
+    const id = slugify(this.node.content.filter(node => node.type === 'text').map(node => node.text).join(''))
+    return [`h${this.node.attrs.level}`, { id, ...this.node.attrs }, 0];
   }
 }
 

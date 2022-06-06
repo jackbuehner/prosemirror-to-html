@@ -4,7 +4,7 @@
  * @param {*} text
  * @returns
  */
-module.exports.htmlEntities = (text) => {
+ module.exports.htmlEntities = (text) => {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -62,3 +62,27 @@ module.exports.findKey = (obj, keyObj) => {
 
   return false;
 };
+
+/**
+ * Converts a string with spaces and other special characters to a slug.
+ *
+ * _Adapted from codeguy's gist at https://gist.github.com/codeguy/6684588_
+ */
+module.exports.slugify = (str, replacement = '-') => {
+  str = str.replace(/^\s+|\s+$/g, ''); // trim
+  str = str.toLowerCase();
+
+  // remove accents, swap ñ for n, etc
+  const from = 'àáäâèéëêìíïîòóöôùúüûñç·/_,:;';
+  const to = 'aaaaeeeeiiiioooouuuunc------';
+  for (let i = 0, l = from.length; i < l; i++) {
+    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+  }
+
+  str = str
+    .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+    .replace(/\s+/g, replacement) // collapse whitespace and replace by -
+    .replace(new RegExp(`[${replacement}]+`, 'g'), replacement); // collapse replacement
+
+  return str;
+}
