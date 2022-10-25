@@ -7,7 +7,12 @@ class Heading extends Node {
   }
 
   toDOM() {
-    const id = slugify(this.node.content.filter(node => node.type === 'text').map(node => node.text).join(''))
+    const id = slugify(
+      this.node.content
+        ?.filter((node) => node.type === 'text')
+        .map((node) => node.text)
+        .join('')
+    );
     return [`h${this.node.attrs.level}`, { id, ...this.node.attrs }, 0];
   }
 }
