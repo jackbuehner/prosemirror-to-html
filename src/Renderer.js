@@ -12,6 +12,10 @@ class Renderer {
       require('./Nodes/OrderedList'),
       require('./Nodes/Paragraph'),
       require('./Nodes/Image'),
+      require('./Nodes/Table'),
+      require('./Nodes/TableCell'),
+      require('./Nodes/TableHeader'),
+      require('./Nodes/TableRow'),
     ];
     this.marks = [
       require('./Marks/Bold'),
