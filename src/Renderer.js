@@ -8,6 +8,7 @@ class Renderer {
       require('./Nodes/BulletList'),
       require('./Nodes/CodeBlock'),
       require('./Nodes/Heading'),
+      require('./Nodes/HorizontalRule'),
       require('./Nodes/ListItem'),
       require('./Nodes/OrderedList'),
       require('./Nodes/Paragraph'),
