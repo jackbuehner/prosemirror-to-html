@@ -137,7 +137,7 @@ class Renderer {
 
       // if the node type matches, render the node
       if (renderClass.matching()) {
-        const maybeDOMOutputSpec = renderClass.toDOM();
+        const maybeDOMOutputSpec = renderClass.toDOM(node, nodeText);
         /**
          * @type {DOMOutputSpec}
          */
