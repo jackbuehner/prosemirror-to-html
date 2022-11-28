@@ -1,0 +1,9 @@
+{
+  "include": ["src/**/*.js"],
+  "compilerOptions": {
+    "declaration": true,
+    "allowJs": true,
+    "lib": ["ES2021"],
+    "outDir": "dist"
+  }
+}
