@@ -1,16 +1,50 @@
-class Mark {
-  name;
+// @ts-check
 
-  constructor(mark) {
-    this.mark = mark;
+/**
+ * @template {import('../Renderer').ProsemirrorDocMark['attrs']} Attrs
+ */
+class Mark {
+  /**
+   * @typedef {import('../Renderer').ProsemirrorDocMark & { attrs?: Attrs }} MarkType
+   */
+
+  /**
+   * The name of the mark type.
+   *
+   * @type {string}
+   */
+  name = 'mark';
+
+  /**
+   * @type {MarkType}
+   */
+  mark;
+
+  /**
+   * @param {MarkType?} markToProcess
+   */
+  constructor(markToProcess) {
+    // @ts-ignore
+    if (!markToProcess) this.mark = { type: '', attrs: {} };
+    else this.mark = markToProcess;
   }
 
+  /**
+   * Whether the mark type matches.
+   *
+   * @returns {boolean}
+   */
   matching() {
     return false;
   }
 
+  /**
+   * The DOM output [specification](https://prosemirror.net/docs/ref/version/0.18.0.html#model.DOMOutputSpec) for this node. It must be an array.
+   *
+   * @returns {import('../Renderer').DOMOutputSpec}
+   */
   toDOM() {
-    return null;
+    return ['span', this.mark.attrs || {}, 0];
   }
 }
 

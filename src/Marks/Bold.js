@@ -1,3 +1,5 @@
+// @ts-check
+
 const Mark = require('./Mark');
 
 class Bold extends Mark {
@@ -7,6 +9,9 @@ class Bold extends Mark {
     return this.mark.type === this.name;
   }
 
+  /**
+   * @returns {import('../Renderer').DOMOutputSpec}
+   */
   toDOM() {
     return ['strong', this.mark.attrs, 0];
   }

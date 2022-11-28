@@ -1,3 +1,5 @@
+// @ts-check
+
 const Node = require('./Node');
 
 class Paragraph extends Node {
@@ -7,6 +9,9 @@ class Paragraph extends Node {
     return this.node.type === this.name;
   }
 
+  /**
+   * @returns {import('../Renderer').DOMOutputSpec}
+   */
   toDOM() {
     return ['p', this.node.attrs, 0];
   }

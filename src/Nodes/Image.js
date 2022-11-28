@@ -1,3 +1,5 @@
+// @ts-check
+
 const Node = require('./Node');
 
 class Image extends Node {
@@ -11,6 +13,9 @@ class Image extends Node {
     return true;
   }
 
+  /**
+   * @returns {import('../Renderer').DOMOutputSpec}
+   */
   toDOM() {
     return ['img', this.node.attrs, 0];
   }

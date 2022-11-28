@@ -1,8 +1,20 @@
-const { htmlEntities, arrayify, findKey } = require('./utils');
+// @ts-check
+
+const { htmlEntities, findKey } = require('./utils');
 
 class Renderer {
   constructor() {
-    this.document = undefined;
+    /**
+     * @type {ProsemirrorDoc}
+     */
+    this.document = {
+      type: 'doc',
+      content: [],
+    };
+
+    /**
+     * @type {typeof import('./Nodes/Node')[]}
+     */
     this.nodes = [
       require('./Nodes/Blockquote'),
       require('./Nodes/BulletList'),
@@ -18,6 +30,10 @@ class Renderer {
       require('./Nodes/TableHeader'),
       require('./Nodes/TableRow'),
     ];
+
+    /**
+     * @type {typeof import('./Marks/Mark')[]}
+     */
     this.marks = [
       require('./Marks/Bold'),
       require('./Marks/Code'),
@@ -28,24 +44,26 @@ class Renderer {
 
   /**
    * Sets the document property in the constructor to the prosemirror document.
-   * @param {string | array | {[key: string]: any}} value prosemirror document
+   * @param {ProsemirrorDoc | ProsemirrorDocNode[]} value prosemirror document
    */
   setDocument(value) {
-    // ensure the the prosmirror document is an object
+    // ensure the the prosmirror document is an object instead of JSON string
     if (typeof value === 'string') {
       value = JSON.parse(value);
-    } else if (typeof value === 'array') {
-      value = JSON.parse(JSON.stringify(value));
     }
 
-    // set the document property in the constuctor
-    this.document = value;
+    // set the document property in the instance
+    if (Array.isArray(value)) {
+      this.document = { type: 'doc', content: value };
+    } else {
+      this.document = value;
+    }
   }
 
   /**
    * Renders a node to html.
    *
-   * @param {*} node
+   * @param {ProsemirrorDocNode} node
    * @returns
    */
   renderNode(node) {
@@ -61,10 +79,19 @@ class Renderer {
 
           // if the mark type matches, render the opening tag for the mark
           if (renderClass.matching()) {
-            const DOMOutputSpec = arrayify(renderClass.toDOM());
+            const maybeDOMOutputSpec = renderClass.toDOM();
+            /**
+             * @type {DOMOutputSpec}
+             */
+            const DOMOutputSpec = Array.isArray(maybeDOMOutputSpec)
+              ? maybeDOMOutputSpec
+              : ['span', {}, 0];
             const specObj = this.generateSpecObject(DOMOutputSpec);
 
             let holeReached = false;
+            /**
+             * @param {typeof specObj[]} children
+             */
             const render = (children) => {
               children.map(({ tag, hole, attrs, children }) => {
                 // if the hole is reached, we cannot render anything else
@@ -109,9 +136,18 @@ class Renderer {
 
       // if the node type matches, render the node
       if (renderClass.matching()) {
-        const DOMOutputSpec = arrayify(renderClass.toDOM());
+        const maybeDOMOutputSpec = renderClass.toDOM();
+        /**
+         * @type {DOMOutputSpec}
+         */
+        const DOMOutputSpec = Array.isArray(maybeDOMOutputSpec)
+          ? maybeDOMOutputSpec
+          : ['div', {}, 0];
         const specObj = this.generateSpecObject(DOMOutputSpec);
 
+        /**
+         * @param {typeof specObj[]} children
+         */
         const render = (children) => {
           children.map(({ tag, hole, attrs, children }) => {
             // render opening tag
@@ -149,7 +185,7 @@ class Renderer {
     if (node.text) {
       // convert special symbols to html entities and push the output to the rendered html array
       html.push(htmlEntities(node.text));
-    } else if (renderClass.text()) {
+    } else if (renderClass?.text()) {
       // push the text to the rendered html array
       html.push(renderClass.text());
     }
@@ -167,14 +203,21 @@ class Renderer {
 
             // if the mark type matches, render the closing tag for the mark
             if (renderClass.matching()) {
-              const DOMOutputSpec = arrayify(renderClass.toDOM());
+              const maybeDOMOutputSpec = renderClass.toDOM();
+              /**
+               * @type {DOMOutputSpec}
+               */
+              const DOMOutputSpec = Array.isArray(maybeDOMOutputSpec)
+                ? maybeDOMOutputSpec
+                : ['span', {}, 0];
               const specObj = this.generateSpecObject(DOMOutputSpec);
 
               let holeReached = false;
+              /**
+               * @param {typeof specObj[]} children
+               */
               const render = (children) => {
                 children.map(({ tag, hole, attrs, children }) => {
-                  console.log(tag, holeReached);
-
                   // after the hole, we still need to render opening tags
                   if (holeReached) {
                     html.push(this.renderOpeningTag({ tag, attrs }));
@@ -215,20 +258,36 @@ class Renderer {
    * - attrs (attributes for each tag)
    * - children (nested tags)
    *
-   * @param {*} spec
+   * @param {DOMOutputSpec} spec
    */
   generateSpecObject(spec) {
-    let specHierarchy = [{}];
+    /**
+     * @typedef {{ tag: string, hole: boolean; attrs: { [key: string]: string | number | boolean | undefined }, children: SpecObj[] }} SpecObj
+     */
+
+    /**
+     * @type {SpecObj[]}
+     */
+    let specHierarchy = [];
+
+    /**
+     * @param {DOMOutputSpec | string} spec
+     * @param {number} level
+     * @param {string | undefined} parentTag
+     * @param {DOMOutputSpec | undefined} tagArray
+     */
     const processDOMOutputSpec = (spec, level = 0, parentTag = undefined, tagArray = undefined) => {
       // if the spec argument is an array, send it through the function again
       if (Array.isArray(spec)) {
         spec.map((sp, i) => {
-          processDOMOutputSpec(
-            sp,
-            i === 0 ? level : level + 1,
-            i === 0 ? parentTag : spec[0],
-            spec
-          );
+          if (typeof sp === 'string') {
+            processDOMOutputSpec(
+              sp,
+              i === 0 ? level : level + 1,
+              i === 0 ? parentTag : spec[0],
+              spec
+            );
+          }
         });
       }
 
@@ -236,9 +295,13 @@ class Renderer {
       // `tagArray` is one of these options: [tagName], [tagName, 0], [tagName, attrs], [tagName, attrs, 0]
       // see https://prosemirror.net/docs/ref/#model.DOMOutputSpec
       if (tagArray && typeof spec === 'string') {
+        /**
+         * @type {SpecObj}
+         */
         const obj = {
           tag: tagArray[0],
           hole: tagArray[1] === 0 || tagArray[2] === 0,
+          // @ts-ignore
           attrs:
             Object.prototype.toString.call(tagArray[1]) === '[object Object]' ? tagArray[1] : {},
           children: [],
@@ -250,21 +313,17 @@ class Renderer {
     processDOMOutputSpec(spec);
 
     // return the spec as an object
-    return specHierarchy[0];
+    return specHierarchy[0] || null;
   }
 
   /**
-   * Renders the opening tags for a node or mark from an array of tags.
+   * Renders an opening tags for a node or mark from a tag name and its attributes.
    *
-   * Tags in the array may be strings or an object with `tag` and `attrs` property.
+   * Tags in the array may be an object with `tag` and `attrs` property.
    *
    * _This function only creates the opening tags for html (`<div>`)._
    *
    * __Example input:__
-   *
-   * ```
-   * renderOpeningTag(['div', 'span'])
-   * ```
    *
    * ```
    * renderOpeningTag(
@@ -280,82 +339,40 @@ class Renderer {
    * )
    * ```
    *
-   * @param {string | string[] | {tag: string; attrs: {[key: string]: string};} | {tag: string; attrs: {[key: string]: string};}} tags
+   * @param {{ tag: string; attrs: { [key: string]: string | number | boolean | undefined }; }} input
    * @returns
    */
-  renderOpeningTag(tags) {
-    // ensure that tags are an array
-    tags = arrayify(tags);
-
-    // if there are no tags, return null
-    if (!tags || !tags.length) {
-      return null;
+  renderOpeningTag(input) {
+    // build a string representation of the node attributes
+    let attrs = '';
+    if (input.attrs) {
+      for (let attribute in input.attrs) {
+        const value = input.attrs[attribute];
+        if (value) {
+          attrs += ` ${attribute}="${value}"`;
+        }
+      }
     }
 
-    return tags
-      .map((item) => {
-        // if the item is only a string, treat the string as the tag name
-        if (typeof item === 'string') {
-          return `<${item}>`;
-        }
-
-        // build a string representation of the node attributes
-        let attrs = '';
-        if (item.attrs) {
-          for (let attribute in item.attrs) {
-            const value = item.attrs[attribute];
-            if (value) {
-              attrs += ` ${attribute}="${value}"`;
-            }
-          }
-        }
-
-        // return the tag and its attributes
-        return `<${item.tag}${attrs}>`;
-      })
-      .join('');
+    // return the tag and its attributes
+    return `<${input.tag}${attrs}>`;
   }
 
   /**
-   * Renders the closing tags for a node or mark from an array of tags.
-   *
-   * Tags in the array may be strings or an object with `tag` and `attrs` property.
+   * Renders a closing tag for a node or mark from an input tag.
    *
    * _This function only creates the closing tags for html (`</div>`)._
    *
-   * ```
-   *
-   * @param {string | string[] | {tag: string; attrs: {[key: string]: string};} | {tag: string; attrs: {[key: string]: string};}} tags
+   * @param {string} tag
    * @returns
    */
-  renderClosingTag(tags) {
-    // ensure that tags are an array
-    tags = arrayify(tags);
-
-    // reverse the order of the tags array since these are closing tags
-    tags = tags.slice().reverse();
-
-    // if there are no tags, return null
-    if (!tags || !tags.length) {
-      return null;
-    }
-
-    return tags
-      .map((item) => {
-        // if the item is only a string, treat the string as the tag name
-        if (typeof item === 'string') {
-          return `</${item}>`;
-        }
-
-        // if the item is an object, get the tag name from the `tag` property
-        return `</${item.tag}>`;
-      })
-      .join('');
+  renderClosingTag(tag) {
+    return `</${tag}>`;
   }
 
   /**
    * Converts a given prosemirror doc into html.
-   * @param value prosemirror doc
+   * @param {ProsemirrorDoc | ProsemirrorDocNode[]} value prosemirror doc
    * @returns html string
    */
   render(value) {
@@ -363,6 +380,9 @@ class Renderer {
     this.setDocument(value);
 
     // store each rendered node as an array of html strings
+    /**
+     * @type {string[]}
+     */
     let html = [];
 
     // loop through the document content
@@ -379,10 +399,12 @@ class Renderer {
   /**
    * Add instructions for rendering a node.
    *
-   * @param {*} node
+   * @param {typeof import('./Nodes/Node')} node
    */
   addNode(node) {
-    const currentIndex = this.marks.findIndex((Node) => new Node().name === new node().name);
+    const currentIndex = this.marks.findIndex(
+      (Node) => new Node(null).name === new node(null).name
+    );
     if (currentIndex >= 0) {
       this.nodes[currentIndex] = node;
     } else {
@@ -393,7 +415,7 @@ class Renderer {
   /**
    * Add instructions for rendering a set of nodes.
    *
-   * @param {*} nodes
+   * @param {typeof import('./Nodes/Node')[]} nodes
    */
   addNodes(nodes) {
     for (const i in nodes) {
@@ -404,10 +426,12 @@ class Renderer {
   /**
    * Add instructions for rending a mark.
    *
-   * @param {*} mark
+   * @param {typeof import('./Marks/Mark')} mark
    */
   addMark(mark) {
-    const currentIndex = this.marks.findIndex((Mark) => new Mark().name === new mark().name);
+    const currentIndex = this.marks.findIndex(
+      (Mark) => new Mark(null).name === new mark(null).name
+    );
     if (currentIndex >= 0) {
       this.marks[currentIndex] = mark;
     } else {
@@ -417,7 +441,8 @@ class Renderer {
 
   /**
    * Add instructions for rendering a set of marks.
-   * @param {*} marks
+   *
+   * @param {typeof import('./Marks/Mark')[]} marks
    */
   addMarks(marks) {
     for (const i in marks) {
@@ -425,5 +450,15 @@ class Renderer {
     }
   }
 }
+
+/**
+ * @typedef {[string, Record<string, string | number | boolean | undefined> | 0 | DOMOutputSpec, ...(DOMOutputSpec | 0)[]]} DOMOutputSpec
+ */
+
+/**
+ * @typedef {{ type: 'doc', content: ProsemirrorDocNode[] }} ProsemirrorDoc
+ * @typedef {{ type: string, attrs?: {[key: string]: string | number | boolean | undefined }, text?: string, content: ProsemirrorDocNode[], marks: ProsemirrorDocMark[] }} ProsemirrorDocNode
+ * @typedef {{ type: string, attrs?: {[key: string]: string | number | boolean | undefined } }} ProsemirrorDocMark
+ */
 
 module.exports = Renderer;

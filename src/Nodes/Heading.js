@@ -1,3 +1,5 @@
+// @ts-check
+
 const Node = require('./Node');
 const { slugify } = require('../utils');
 
@@ -8,6 +10,9 @@ class Heading extends Node {
     return this.node.type === this.name;
   }
 
+  /**
+   * @returns {import('../Renderer').DOMOutputSpec}
+   */
   toDOM() {
     const id = slugify(
       this.node.content

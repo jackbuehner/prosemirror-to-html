@@ -1,3 +1,5 @@
+// @ts-check
+
 const Node = require('./Node');
 
 class CodeBlock extends Node {
@@ -7,6 +9,9 @@ class CodeBlock extends Node {
     return this.node.type === this.name;
   }
 
+  /**
+   * @returns {import('../Renderer').DOMOutputSpec}
+   */
   toDOM() {
     return ['pre', ['code', this.node.attrs, 0]];
   }

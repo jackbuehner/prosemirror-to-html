@@ -1,3 +1,5 @@
+// @ts-check
+
 const Node = require('./Node');
 
 class TableHeader extends Node {
@@ -7,6 +9,9 @@ class TableHeader extends Node {
     return this.node.type === this.name;
   }
 
+  /**
+   * @returns {import('../Renderer').DOMOutputSpec}
+   */
   toDOM() {
     return ['th', this.node.attrs, 0];
   }
