@@ -80,7 +80,7 @@ class Renderer {
 
           // if the mark type matches, render the opening tag for the mark
           if (renderClass.matching()) {
-            const maybeDOMOutputSpec = renderClass.toDOM(nodeText);
+            const maybeDOMOutputSpec = renderClass.toDOM(node, nodeText);
             /**
              * @type {DOMOutputSpec}
              */
@@ -204,7 +204,7 @@ class Renderer {
 
             // if the mark type matches, render the closing tag for the mark
             if (renderClass.matching()) {
-              const maybeDOMOutputSpec = renderClass.toDOM(nodeText);
+              const maybeDOMOutputSpec = renderClass.toDOM(node, nodeText);
               /**
                * @type {DOMOutputSpec}
                */
