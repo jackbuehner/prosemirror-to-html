@@ -281,7 +281,7 @@ class Renderer {
       // if the spec argument is an array, send it through the function again
       if (Array.isArray(spec)) {
         spec.map((sp, i) => {
-          if (typeof sp === 'string') {
+          if (typeof sp === 'string' || Array.isArray(sp)) {
             processDOMOutputSpec(
               sp,
               i === 0 ? level : level + 1,
