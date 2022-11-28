@@ -67,6 +67,7 @@ class Renderer {
    * @returns
    */
   renderNode(node) {
+    const nodeText = this.getNodeText(node);
     let html = [];
 
     // if the node has marks, render the opening tag
@@ -79,7 +80,7 @@ class Renderer {
 
           // if the mark type matches, render the opening tag for the mark
           if (renderClass.matching()) {
-            const maybeDOMOutputSpec = renderClass.toDOM();
+            const maybeDOMOutputSpec = renderClass.toDOM(nodeText);
             /**
              * @type {DOMOutputSpec}
              */
@@ -203,7 +204,7 @@ class Renderer {
 
             // if the mark type matches, render the closing tag for the mark
             if (renderClass.matching()) {
-              const maybeDOMOutputSpec = renderClass.toDOM();
+              const maybeDOMOutputSpec = renderClass.toDOM(nodeText);
               /**
                * @type {DOMOutputSpec}
                */
@@ -314,6 +315,24 @@ class Renderer {
 
     // return the spec as an object
     return specHierarchy[0] || null;
+  }
+
+  /**
+   * Gets the text content of the node by returning `node.text` for the node or its children.
+   *
+   * @param {ProsemirrorDocNode} node
+   * @returns {string}
+   */
+  getNodeText(node) {
+    if (node.text) return node.text;
+
+    if (this.nodes) {
+      const NodeClass = new (this.nodes?.find((Node) => new Node(null).name === node.type) ||
+        require('./Nodes/Node'))(null);
+      if (typeof NodeClass.text() === 'string') return NodeClass.text() || '';
+    }
+
+    return node.content?.map((_node) => this.getNodeText.apply(this, [_node])).join('') || '';
   }
 
   /**

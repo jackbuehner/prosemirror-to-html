@@ -41,9 +41,10 @@ class Mark {
   /**
    * The DOM output [specification](https://prosemirror.net/docs/ref/version/0.18.0.html#model.DOMOutputSpec) for this node. It must be an array.
    *
+   * @param {string} text The text value of the node with this mark.
    * @returns {import('../Renderer').DOMOutputSpec}
    */
-  toDOM() {
+  toDOM(text) {
     return ['span', this.mark.attrs || {}, 0];
   }
 }
