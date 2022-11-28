@@ -7,15 +7,8 @@ class Link extends Mark {
     return this.mark.type === this.name;
   }
 
-  tag() {
-    return [
-      {
-        tag: 'a',
-        attrs: {
-          href: this.mark.attrs.href,
-        },
-      },
-    ];
+  toDOM() {
+    return ['a', this.mark.attrs, 0];
   }
 }
 

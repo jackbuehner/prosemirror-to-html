@@ -7,8 +7,8 @@ class Bold extends Mark {
     return this.mark.type === this.name;
   }
 
-  tag() {
-    return 'strong';
+  toDOM() {
+    return ['strong', this.mark.attrs, 0];
   }
 }
 

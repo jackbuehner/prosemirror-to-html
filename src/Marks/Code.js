@@ -7,8 +7,8 @@ class Code extends Mark {
     return this.mark.type === this.name;
   }
 
-  tag() {
-    return 'code';
+  toDOM() {
+    return ['code', this.mark.attrs, 0];
   }
 }
 

@@ -9,7 +9,7 @@ class Mark {
     return false;
   }
 
-  tag() {
+  toDOM() {
     return null;
   }
 }

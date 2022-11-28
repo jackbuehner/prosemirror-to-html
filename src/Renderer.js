@@ -61,7 +61,40 @@ class Renderer {
 
           // if the mark type matches, render the opening tag for the mark
           if (renderClass.matching()) {
-            html.push(this.renderOpeningTag(renderClass.tag()));
+            const DOMOutputSpec = arrayify(renderClass.toDOM());
+            const specObj = this.generateSpecObject(DOMOutputSpec);
+
+            let holeReached = false;
+            const render = (children) => {
+              children.map(({ tag, hole, attrs, children }) => {
+                // if the hole is reached, we cannot render anything else
+                // because it would be in the wrong order
+                if (holeReached) return;
+
+                // render opening tag
+                html.push(this.renderOpeningTag({ tag, attrs }));
+
+                // stop render at content or text (if applicable to this node)
+                if (hole) {
+                  // do nothing so that content will appear
+                  holeReached = true;
+                }
+
+                // render children only if they exist and the hole was not rendered for the same tag
+                // (the hole must be the only child)
+                else if (children) {
+                  render(children);
+                }
+
+                // if the hole is not reached, we need to make sure
+                // we render closing tags
+                if (!holeReached) {
+                  html.push(this.renderClosingTag(tag));
+                }
+              });
+            };
+
+            render([specObj]);
           }
         }
       });
@@ -132,9 +165,39 @@ class Renderer {
             const MarkClass = this.marks[i];
             const renderClass = new MarkClass(mark);
 
-            // if the mark type matches, render the opening tag for the mark
+            // if the mark type matches, render the closing tag for the mark
             if (renderClass.matching()) {
-              html.push(this.renderClosingTag(renderClass.tag()));
+              const DOMOutputSpec = arrayify(renderClass.toDOM());
+              const specObj = this.generateSpecObject(DOMOutputSpec);
+
+              let holeReached = false;
+              const render = (children) => {
+                children.map(({ tag, hole, attrs, children }) => {
+                  console.log(tag, holeReached);
+
+                  // after the hole, we still need to render opening tags
+                  if (holeReached) {
+                    html.push(this.renderOpeningTag({ tag, attrs }));
+                  }
+
+                  // render child tags before parent closing tags
+                  if (children && !hole) {
+                    render(children);
+                  }
+
+                  if (hole) {
+                    holeReached = true;
+                  }
+
+                  // render closing tag only after hole is reached
+                  // (closing tags would have already been rendered before the hole)
+                  if (holeReached) {
+                    html.push(this.renderClosingTag(tag));
+                  }
+                });
+              };
+
+              render([specObj]);
             }
           }
         });

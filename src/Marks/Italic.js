@@ -7,8 +7,8 @@ class Italic extends Mark {
     return this.mark.type === this.name;
   }
 
-  tag() {
-    return 'em';
+  toDOM() {
+    return ['em', this.mark.attrs, 0];
   }
 }
 
