@@ -1,8 +1,10 @@
 const Node = require('./Node');
 
 class Blockquote extends Node {
+  name = 'blockquote';
+
   matching() {
-    return this.node.type === 'blockquote';
+    return this.node.type === this.name;
   }
 
   toDOM() {

@@ -319,7 +319,12 @@ class Renderer {
    * @param {*} node
    */
   addNode(node) {
-    this.nodes.push(node);
+    const currentIndex = this.marks.findIndex((Node) => new Node().name === new node().name);
+    if (currentIndex >= 0) {
+      this.nodes[currentIndex] = node;
+    } else {
+      this.nodes.push(node);
+    }
   }
 
   /**
@@ -339,7 +344,12 @@ class Renderer {
    * @param {*} mark
    */
   addMark(mark) {
-    this.marks.push(mark);
+    const currentIndex = this.marks.findIndex((Mark) => new Mark().name === new mark().name);
+    if (currentIndex >= 0) {
+      this.marks[currentIndex] = mark;
+    } else {
+      this.marks.push(mark);
+    }
   }
 
   /**

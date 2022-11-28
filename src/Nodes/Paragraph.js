@@ -1,8 +1,10 @@
 const Node = require('./Node');
 
 class Paragraph extends Node {
+  name = 'paragraph';
+
   matching() {
-    return this.node.type === 'paragraph';
+    return this.node.type === this.name;
   }
 
   toDOM() {

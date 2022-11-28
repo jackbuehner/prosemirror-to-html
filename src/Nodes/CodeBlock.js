@@ -1,8 +1,10 @@
 const Node = require('./Node');
 
 class CodeBlock extends Node {
+  name = 'codeBlock';
+
   matching() {
-    return this.node.type === 'codeBlock';
+    return this.node.type === this.name;
   }
 
   toDOM() {

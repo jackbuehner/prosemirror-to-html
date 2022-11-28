@@ -1,4 +1,6 @@
 class Mark {
+  name;
+
   constructor(mark) {
     this.mark = mark;
   }

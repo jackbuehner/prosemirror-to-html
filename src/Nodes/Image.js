@@ -1,8 +1,10 @@
 const Node = require('./Node');
 
 class Image extends Node {
+  name = 'image';
+
   matching() {
-    return this.node.type === 'image';
+    return this.node.type === this.name;
   }
 
   selfClosing() {

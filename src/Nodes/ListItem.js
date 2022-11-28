@@ -1,8 +1,10 @@
 const Node = require('./Node');
 
 class ItemList extends Node {
+  name = 'listItem';
+
   matching() {
-    return this.node.type === 'listItem';
+    return this.node.type === this.name;
   }
 
   toDOM() {

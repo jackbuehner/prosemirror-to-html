@@ -1,4 +1,6 @@
 class Node {
+  name;
+
   constructor(node) {
     this.node = node;
   }

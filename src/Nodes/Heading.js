@@ -2,8 +2,10 @@ const Node = require('./Node');
 const { slugify } = require('../utils');
 
 class Heading extends Node {
+  name = 'heading';
+
   matching() {
-    return this.node.type === 'heading';
+    return this.node.type === this.name;
   }
 
   toDOM() {

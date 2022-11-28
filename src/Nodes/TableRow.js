@@ -1,8 +1,10 @@
 const Node = require('./Node');
 
 class TableRow extends Node {
+  name = 'tableRow';
+
   matching() {
-    return this.node.type === 'tableRow';
+    return this.node.type === this.name;
   }
 
   toDOM() {
