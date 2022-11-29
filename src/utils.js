@@ -6,14 +6,14 @@
  * @param {string} text
  * @returns {string}
  */
-module.exports.htmlEntities = (text) => {
+function htmlEntities(text) {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
-};
+}
 
 /**
  * Recursively find a key in array of nested objects.
@@ -24,32 +24,36 @@ module.exports.htmlEntities = (text) => {
  * @param {{ [key: string]: any }} keyObj
  * @returns
  */
-module.exports.findKey = (obj, keyObj) => {
-  var p, key, val, tRet;
-  for (p in keyObj) {
-    if (keyObj.hasOwnProperty(p)) {
-      key = p;
-      val = keyObj[p];
-    }
-  }
-
-  for (p in obj) {
-    if (p == key) {
-      if (obj[p] == val) {
-        return obj;
+function findKey(obj, keyObj) {
+  try {
+    var p, key, val, tRet;
+    for (p in keyObj) {
+      if (keyObj.hasOwnProperty(p)) {
+        key = p;
+        val = keyObj[p];
       }
-    } else if (obj[p] instanceof Object) {
-      if (obj.hasOwnProperty(p)) {
-        tRet = this.findKey(obj[p], keyObj);
-        if (tRet) {
-          return tRet;
+    }
+
+    for (p in obj) {
+      if (p == key) {
+        if (obj[p] == val) {
+          return obj;
+        }
+      } else if (obj[p] instanceof Object) {
+        if (obj.hasOwnProperty(p)) {
+          tRet = findKey(obj[p], keyObj);
+          if (tRet) {
+            return tRet;
+          }
         }
       }
     }
-  }
 
-  return false;
-};
+    return false;
+  } catch (error) {
+    return false;
+  }
+}
 
 /**
  * Converts a string with spaces and other special characters to a slug.
@@ -60,7 +64,7 @@ module.exports.findKey = (obj, keyObj) => {
  * @param {string} replacement
  * @returns {string}
  */
-module.exports.slugify = (str, replacement = '-') => {
+function slugify(str, replacement = '-') {
   str = str.replace(/^\s+|\s+$/g, ''); // trim
   str = str.toLowerCase();
 
@@ -77,4 +81,10 @@ module.exports.slugify = (str, replacement = '-') => {
     .replace(new RegExp(`[${replacement}]+`, 'g'), replacement); // collapse replacement
 
   return str;
+}
+
+module.exports = {
+  htmlEntities,
+  findKey,
+  slugify,
 };
