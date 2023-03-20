@@ -4,6 +4,7 @@
     "declaration": true,
     "allowJs": true,
     "lib": ["ES2021"],
-    "outDir": "dist"
+    "outDir": "dist",
+    "strictNullChecks": true
   }
 }

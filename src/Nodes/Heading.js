@@ -14,12 +14,14 @@ class Heading extends Node {
    * @returns {import('../Renderer').DOMOutputSpec}
    */
   toDOM() {
-    const id = slugify(
-      this.node.content
-        ?.filter((node) => node.type === 'text')
-        .map((node) => node.text)
-        .join('')
-    );
+    const id = this.node.content
+      ? slugify(
+          this.node.content
+            .filter((node) => node.type === 'text')
+            .map((node) => node.text)
+            .join('')
+        )
+      : undefined;
     return [`h${this.node.attrs.level}`, { id, ...this.node.attrs }, 0];
   }
 }
